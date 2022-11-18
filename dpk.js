@@ -7,18 +7,14 @@ function createPartitionKey(data) {
 exports.deterministicPartitionKey = (event) => {
   const TRIVIAL_PARTITION_KEY = "0";
   const MAX_PARTITION_KEY_LENGTH = 256;
-  let candidate;
 
+  // Return default value if no argument is passed
   if (event === undefined) {
     return TRIVIAL_PARTITION_KEY;
   }
 
-  if (event.partitionKey) {
-    candidate = event.partitionKey;
-  } else {
-    const data = JSON.stringify(event);
-    candidate = createPartitionKey(data);
-  }
+  // Get candidate key from argument
+  let candidate = event.partitionKey ? event.partitionKey : createPartitionKey(JSON.stringify(event));
 
   // Ensure we return a string
   if (typeof candidate !== "string") {
